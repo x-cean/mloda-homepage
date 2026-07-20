@@ -1,0 +1,16 @@
+:root{
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:24px; --space-6:32px; --space-7:48px; --space-8:64px;
+  --space-9:96px; --space-10:128px; /* section padding */
+
+  --radius-chip:8px;
+  --radius-card:16px;
+  --radius-panel:24px; /* large dark panels / screenshots */
+  --radius-pill:999px; /* all buttons */
+
+  --border-dark:1px solid var(--line-dark);
+  --border-light:1px solid var(--line-light);
+  --shadow-panel:0 24px 60px rgba(10,12,15,.35);
+  --ease-brand:cubic-bezier(.22,1,.36,1);
+  --dur-fast:180ms; --dur-med:360ms;
+}

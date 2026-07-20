@@ -1,0 +1,42 @@
+:root{
+  /* mloda brand */
+  --green-700:#12813C;
+  --green-600:#23A455; /* primary accent */
+  --green-400:#86C166; /* minor decoration */
+  --sand-300:#FAD689;  /* minor decoration */
+  --apricot-400:#E79460; /* minor decoration */
+  --gradient-brand:linear-gradient(160deg,#12813C 0%,#23A455 55%,#4FC578 100%);
+
+  /* Dark surfaces (slightly green-tinted ink) */
+  --ink-950:#0A0F0B;
+  --ink-900:#0F1611;
+  --ink-850:#131A15;
+  --ink-800:#18201A; /* code block */
+  --ink-700:#242E26;
+  --gray-600:#3C3C3C;
+  --line-dark:rgba(255,255,255,.14);
+  --text-on-dark:#F4F7F4;
+  --text-on-dark-2:rgba(244,247,244,.64);
+
+  /* Light surfaces */
+  --paper-0:#FFFFFF;
+  --paper-1:#F5F7F9;
+  --paper-2:#EBEFF2;
+  --line-light:rgba(15,23,32,.12);
+  --text-ink:#0E120F;
+  --text-ink-2:rgba(14,18,15,.62);
+
+  /* Imagery tint */
+  --duotone-hi:#E4F2DF;
+  --duotone-lo:#23A455;
+
+  /* Semantic aliases */
+  --surface-page:var(--paper-0);
+  --surface-card:var(--paper-1);
+  --surface-panel-dark:var(--ink-900);
+  --surface-code:var(--ink-800);
+  --accent:var(--green-600);
+  --text-body:var(--text-ink);
+  --text-muted:var(--text-ink-2);
+  --focus-ring:0 0 0 3px rgba(35,164,85,.35);
+}
