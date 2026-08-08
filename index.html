@@ -6,7 +6,11 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <script src="kit-loader.js"></script>
-<style>html,body{margin:0}</style></head>
+<style>html,body{margin:0}@keyframes swapSpring{0%{transform:translateY(-24px) scale(1.06);opacity:0}60%{transform:translateY(4px) scale(1.06);opacity:1}100%{transform:translateY(0) scale(1.06);opacity:1}}
+@keyframes rebuildIn{from{opacity:0;transform:scaleX(0.4)}to{opacity:1;transform:scaleX(1)}}
+@keyframes swapPop{0%{transform:translateY(-20px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes plugIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style></head>
 <body><div id="root"></div>
 <script type="text/babel" data-presets="react" src="tweaks-panel.jsx"></script>
 <script type="text/babel" data-presets="react">
@@ -34,21 +38,26 @@ function Hero(){
     </div>
   </section>;
 }
-function Slideshow({interval=2200}){
-  const imgs=['mloda-screenshot-1.png','mloda-screenshot-2.png','mloda-screenshot-3.png'];
+function Slideshow({interval=2200,bright}){
+  const steps=[['1','AI asks'],['2','mloda returns'],['3','Audit trail']];
+  const imgs=['mloda-screenshot-1-panel.png','mloda-screenshot-2-panel.png','mloda-screenshot-3-panel.png'];
   const [i,setI]=React.useState(0);
-  React.useEffect(()=>{if(!interval)return;const t=setInterval(()=>setI(v=>(v+1)%imgs.length),interval);return ()=>clearInterval(t)},[interval]);
-  return <div style={{position:'relative'}}>
-    <div style={{position:'relative',width:'100%',aspectRatio:'16/9',borderRadius:16,border:'1px solid var(--line-light)',background:'#fff',overflow:'hidden'}}>
+  const [hover,setHover]=React.useState(false);
+  React.useEffect(()=>{if(!interval||hover)return;const t=setInterval(()=>setI(v=>(v+1)%imgs.length),interval);return ()=>clearInterval(t)},[interval,hover]);
+  return <div onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'flex',gap:16,alignItems:'center'}}>
+    <div style={{display:'flex',flexDirection:'column',gap:10,flexShrink:0}}>
+      {steps.map(([n,l],k)=><button key={n} onMouseEnter={()=>setI(k)} onClick={()=>setI(k)}
+        style={{display:'flex',alignItems:'center',gap:8,padding:'9px 14px',borderRadius:10,cursor:'pointer',
+          border:k===i?'1.5px solid var(--accent)':(bright?'1.5px solid var(--line-light)':'1.5px solid rgba(255,255,255,.25)'),
+          background:k===i?'var(--accent)':'transparent',color:k===i?'#fff':(bright?'var(--text-muted)':'rgba(255,255,255,.75)'),
+          fontFamily:'var(--font-sans)',fontSize:13.5,fontWeight:600,transition:'all 250ms var(--ease-brand)'}}>
+        <span style={{fontWeight:700,fontSize:15}}>{n}</span>{l}</button>)}
+    </div>
+    <div style={{position:'relative',flex:1,minWidth:0,aspectRatio:'880/740',borderRadius:16,border:'1px solid var(--line-light)',background:'#fff',overflow:'hidden'}}>
       {imgs.map((f,n)=><img key={f} src={A+'images/'+f} alt={'mloda step '+(n+1)}
-        style={{position:'absolute',inset:0,left:14,width:'calc(100% - 14px)',height:'100%',objectFit:'contain',
+        style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain',objectPosition:'left top',padding:'14px 10px',boxSizing:'border-box',
           opacity:n===i?1:0,transform:n===i?'translateX(0)':(n<i?'translateX(-24px)':'translateX(24px)'),
           transition:'opacity 400ms var(--ease-brand), transform 400ms var(--ease-brand)'}}/>)}
-    </div>
-    <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:14}}>
-      {imgs.map((f,n)=><button key={f} onClick={()=>setI(n)} aria-label={'Slide '+(n+1)}
-        style={{width:n===i?22:8,height:8,borderRadius:999,border:'none',cursor:'pointer',padding:0,
-          background:n===i?'var(--accent)':'rgba(255,255,255,.3)',transition:'all 300ms var(--ease-brand)'}}/>)}
     </div>
   </div>;
 }
@@ -57,15 +66,14 @@ function ProductPanel({interval,bright}){
     <div style={{background:bright?'var(--paper-1)':'var(--ink-900)',borderRadius:'var(--radius-panel)',border:bright?'1px solid var(--line-light)':'1px solid var(--line-dark)',padding:'48px 48px 38px',color:bright?'var(--text-ink)':'var(--text-on-dark)',boxShadow:bright?'0 24px 60px rgba(14,18,15,.08)':'var(--shadow-panel)',display:'grid',gridTemplateColumns:'1fr 1.9fr',gap:48,alignItems:'center'}}>
       <div>
         <div style={{display:'flex',gap:10,alignItems:'center'}}>
-          <h2 style={{margin:0,fontSize:'var(--text-h2)',fontWeight:600,letterSpacing:'var(--tracking-display)'}}>Simple data access.<br/>Full lineage.</h2>
+          <h2 style={{margin:0,fontSize:'calc(var(--text-h2)*0.82)',fontWeight:600,letterSpacing:'var(--tracking-display)'}}><span style={{fontSize:'var(--text-h2)'}}>See it live:</span><br/>mloda-backed<br/>credit risk agent.</h2>
         </div>
-        <p style={{margin:'20px 0 0',fontSize:17,lineHeight:'var(--leading-body)',color:bright?'var(--text-muted)':'var(--text-on-dark-2)'}}>Your agent asks for a feature. mloda resolves the sources, runs the pipeline, and returns the result - with the complete audit trail attached.</p>
+        <p style={{margin:'20px 0 0',fontSize:17,lineHeight:'var(--leading-body)',color:bright?'var(--text-muted)':'var(--text-on-dark-2)'}}>The agent asks for credit risk scores. mloda pools the data sources, runs the calculations, and returns scored results - with the full audit trail attached.</p>
         <div style={{display:'flex',gap:12,marginTop:30}}>
-          <Button label="Talk to us" variant={bright?'ink':'white'} href="https://calendly.com/hello-mloda/30min"/>
-          <Button label="Try for free" variant="primary" href="https://github.com/mloda-ai/mloda"/>
+          <Button label="Play with the demo" variant={bright?'ink':'white'} href="#"/>
         </div>
       </div>
-      <Slideshow interval={interval}/>
+      <Slideshow interval={interval} bright={bright}/>
     </div>
   </section>;
 }
@@ -106,17 +114,18 @@ function StepGraphic({kind}){
   </svg>;
 }
 function DataSources({logoWall}){
-  const srcs=[['Databases','Postgres, MySQL, Snowflake - query in place, no copies.'],['Files & object stores','CSV, Parquet, S3 buckets - local or cloud.'],['APIs','REST and internal services, wrapped once as a FeatureGroup.'],['Feature outputs','Results of other features - chain and reuse across teams.']];
+  const srcs=[['Databases','Data lakes, warehouses, SQL stores - queried in place, no copies.'],['Tabular data','Dataframes, CSV, tables - native on Pandas, Polars, Spark.'],['Unstructured data','Text, Markdown, PDF - parsed and ready for retrieval.'],['Models & APIs','Third-party and internal services - wrapped once, reused everywhere.']];
   const ops=['__scored','__aggregated','__normalized','and more'];
   const [hov,setHov]=React.useState(null);
   const [opsOpen,setOpsOpen]=React.useState(false);
   const [agentOpen,setAgentOpen]=React.useState(false);
   const [copied,setCopied]=React.useState(false);
   const [ghOpen,setGhOpen]=React.useState(false);
+  const [resOpen,setResOpen]=React.useState(false);
   const curve=i=>{const ys=[10,32,68,90];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title="Multi-model data sources" align="center"/>
-    <div style={{display:'grid',gridTemplateColumns:'minmax(240px,300px) minmax(320px,1fr) minmax(240px,300px)',gap:0,alignItems:'center',marginTop:20}}>
+    <SectionHeader title={<span>Multi-modal data sources,<br/>easily connected</span>} align="center"/>
+    <div style={{display:'grid',gridTemplateColumns:'minmax(240px,300px) minmax(420px,1fr) minmax(90px,120px)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
           style={{position:'relative',background:'var(--paper-0)',border:hov===i?'1px solid var(--accent)':'1px solid var(--text-ink)',borderRadius:'var(--radius-card)',padding:'16px 20px',cursor:'default',transition:'all 250ms var(--ease-brand)',boxShadow:hov===i?'0 8px 24px rgba(14,18,15,.10)':'none'}}>
@@ -132,21 +141,21 @@ function DataSources({logoWall}){
           <line x1="200" y1="50" x2="560" y2="50" stroke="rgba(15,23,32,.24)" strokeWidth="1.2" strokeDasharray="4 5" vectorEffect="non-scaling-stroke"/>
         </svg>
         <a href="https://github.com/mloda-ai/mloda" target="_blank" onMouseEnter={()=>setGhOpen(true)} onMouseLeave={()=>setGhOpen(false)} style={{position:'relative',zIndex:1,marginLeft:'auto',transform:'translateX(28px)',background:'var(--accent)',color:'#fff',borderRadius:14,padding:'16px 30px',fontFamily:'Helvetica,Arial,sans-serif',fontWeight:600,fontSize:24,textDecoration:'none',cursor:'pointer'}}>mloda
-          <div style={{position:'absolute',left:'50%',bottom:76,transform:'translateX(-50%) '+(ghOpen?'translateY(0)':'translateY(6px)'),opacity:ghOpen?1:0,pointerEvents:'none',transition:'all 250ms var(--ease-brand)',background:'var(--paper-0)',border:'1px solid var(--line-light)',boxShadow:'0 12px 32px rgba(14,18,15,.14)',borderRadius:12,padding:'8px 12px',whiteSpace:'nowrap',fontSize:13,fontWeight:600,color:'var(--accent)'}}>Visit us on GitHub →</div>
-        </a>
-        <div onMouseEnter={()=>setOpsOpen(true)} onMouseLeave={()=>setOpsOpen(false)}
-          style={{position:'relative',zIndex:1,cursor:'default',flexShrink:0,transform:'translateX(28px)'}}>
-          <div style={{width:44,height:44,borderRadius:'50%',border:'1.5px dashed '+(opsOpen?'var(--accent)':'rgba(14,18,15,.35)'),background:'var(--paper-0)',display:'grid',placeItems:'center',fontSize:22,fontWeight:500,color:opsOpen?'var(--accent)':'var(--text-muted)',transition:'all 250ms var(--ease-brand)'}}>+</div>
-          <div style={{position:'absolute',left:'50%',bottom:68,transform:'translateX(-50%) '+(opsOpen?'translateY(0)':'translateY(6px)'),opacity:opsOpen?1:0,pointerEvents:'none',transition:'all 250ms var(--ease-brand)',background:'var(--paper-0)',border:'1px solid var(--line-light)',boxShadow:'0 12px 32px rgba(14,18,15,.14)',borderRadius:12,padding:'10px 16px 8px',width:150}}>
-            <div style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'0.08em',textTransform:'uppercase',color:'var(--text-muted)',marginBottom:6}}>Optional data operations</div>
-            {ops.map(o=><div key={o} style={{fontFamily:'var(--font-mono)',fontSize:12.5,color:o==='and more'?'var(--text-muted)':'var(--accent)',lineHeight:1.55}}>{o}</div>)}
+          <div style={{position:'absolute',left:'50%',bottom:76,transform:'translateX(-50%) '+(ghOpen?'translateY(0)':'translateY(6px)'),opacity:(ghOpen&&!opsOpen)?1:0,pointerEvents:'none',transition:'all 250ms var(--ease-brand)',background:'var(--paper-0)',border:'1px solid var(--line-light)',boxShadow:'0 12px 32px rgba(14,18,15,.14)',borderRadius:12,padding:'8px 12px',whiteSpace:'nowrap',fontSize:13,fontWeight:600,color:'var(--accent)'}}>Visit us on GitHub →</div>
+          <div onMouseEnter={(e)=>{e.stopPropagation();setOpsOpen(true)}} onMouseLeave={()=>setOpsOpen(false)}
+            onClick={(e)=>{e.preventDefault();e.stopPropagation();const el=document.getElementById('plugins');if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-40,behavior:'smooth'})}}
+            style={{position:'absolute',right:-16,top:'50%',transform:'translateY(-50%)',zIndex:2,cursor:'pointer'}}>
+            <div style={{width:32,height:32,borderRadius:'50%',border:'1.5px dashed '+(opsOpen?'var(--accent)':'rgba(255,255,255,.85)'),background:opsOpen?'var(--paper-0)':'var(--accent)',display:'grid',placeItems:'center',fontSize:17,fontWeight:500,lineHeight:1,color:opsOpen?'var(--accent)':'#fff',transition:'all 250ms var(--ease-brand)'}}>+</div>
+            <div style={{position:'absolute',left:'50%',bottom:44,transform:'translateX(-50%) '+(opsOpen?'translateY(0)':'translateY(6px)'),opacity:opsOpen?1:0,pointerEvents:'none',transition:'all 250ms var(--ease-brand)',background:'var(--paper-0)',border:'1px solid var(--line-light)',boxShadow:'0 12px 32px rgba(14,18,15,.14)',borderRadius:12,padding:'10px 14px'}}>
+              <div style={{fontSize:13.5,fontWeight:600,color:'var(--accent)',whiteSpace:'nowrap'}}>Data operations →</div>
+            </div>
           </div>
-        </div>
+        </a>
         <div onMouseEnter={()=>setAgentOpen(true)} onMouseLeave={()=>{setAgentOpen(false);setCopied(false)}}
           onClick={()=>{const txt='Wire mloda into this project: pip install mloda, then wrap my existing data sources (databases, files, APIs) as FeatureGroups and replace ad-hoc data-fetching code with declarative mlodaAPI.run() feature requests. Docs: https://github.com/mloda-ai/mloda';
             const fallback=()=>{const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');setCopied(true)}catch(e){}document.body.removeChild(ta)};
             if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>setCopied(true)).catch(fallback)}else{fallback()}}}
-          style={{position:'relative',zIndex:1,flexShrink:0,marginTop:-7,marginLeft:'auto',marginRight:8,cursor:'pointer'}}>
+          style={{position:'relative',zIndex:1,flexShrink:0,marginTop:-7,marginLeft:42,cursor:'pointer'}}>
           <svg viewBox="0 0 44 40" style={{width:52,display:'block'}}>
             <line x1="14" y1="10" x2="8" y2="2" stroke="var(--text-ink)" strokeWidth="2" strokeLinecap="round"/>
             <line x1="30" y1="10" x2="36" y2="2" stroke="var(--text-ink)" strokeWidth="2" strokeLinecap="round"/>
@@ -159,22 +168,84 @@ function DataSources({logoWall}){
             <div style={{fontFamily:'var(--font-mono)',fontSize:10.5,color:'var(--text-muted)',marginTop:4,lineHeight:1.45}}>{copied?'Paste it into your coding agent.':'Click to copy a prompt for your coding agent.'}</div>
           </div>
         </div>
+        <div style={{position:'relative',zIndex:1,background:'var(--ink-900)',borderRadius:'var(--radius-card)',padding:'20px 22px',color:'var(--text-on-dark)',maxWidth:270,flexShrink:1}}>
+          <h3 style={{margin:0,fontSize:16,fontWeight:600}}>Your AI agent</h3>
+          <p style={{margin:'6px 0 0',fontSize:13.5,lineHeight:1.5,color:'var(--text-on-dark-2)'}}>Receives exactly the data it asked for - resolved, processed, and traced to source.</p>
+        </div>
       </div>
-      <div style={{background:'var(--ink-900)',borderRadius:'var(--radius-card)',padding:'22px 24px',color:'var(--text-on-dark)'}}>
-        <h3 style={{margin:0,fontSize:16,fontWeight:600}}>Your AI agent</h3>
-        <p style={{margin:'6px 0 0',fontSize:13.5,lineHeight:1.5,color:'var(--text-on-dark-2)'}}>Receives exactly the data it asked for - resolved, processed, and traced to source.</p>
+      <div style={{display:'flex',alignItems:'center',minWidth:0}}>
+        <div style={{flex:1,minWidth:14,borderTop:'1.5px dashed rgba(15,23,32,.35)'}}/>
+        <div onMouseEnter={()=>setResOpen(true)} onMouseLeave={()=>setResOpen(false)}
+          onClick={()=>{const el=document.getElementById('built-with-mloda');if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-40,behavior:'smooth'})}}
+          style={{position:'relative',cursor:'pointer'}}>
+          <div style={{position:'absolute',left:'50%',bottom:'calc(100% + 10px)',transform:'translateX(-50%) '+(resOpen?'translateY(0)':'translateY(6px)'),opacity:resOpen?1:0,pointerEvents:'none',transition:'all 250ms var(--ease-brand)',background:'var(--paper-0)',border:'1px solid var(--line-light)',boxShadow:'0 12px 32px rgba(14,18,15,.14)',borderRadius:12,padding:'10px 14px'}}>
+            <div style={{fontSize:13.5,fontWeight:600,color:'var(--accent)',whiteSpace:'nowrap'}}>See use case →</div>
+          </div>
+        <div style={{border:'1.5px solid var(--accent)',borderRadius:14,padding:'10px 16px',fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-ink)',textAlign:'center',lineHeight:1.4,fontWeight:700}}>Results<br/>delivered</div>
+        </div>
       </div>
     </div>
     {logoWall&&<div style={{marginTop:0}}>{logoWall}</div>}
+  </section>;
+}
+function PluginAnimOptions(){
+  const [tick,setTick]=React.useState(0);
+  React.useEffect(()=>{const t=setInterval(()=>setTick(v=>v+1),3000);return()=>clearInterval(t)},[]);
+  const greens=['var(--accent)','#7BCB89','#12813C'];
+  const swapIdx=tick%5;
+  const Cap=({t})=><div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--text-muted)',marginTop:8,textAlign:'center'}}>{t}</div>;
+  return <div style={{maxWidth:880,margin:'56px auto 0',display:'flex',flexDirection:'column',alignItems:'center',gap:22}}>
+    <p style={{margin:'0 0 6px',fontSize:'var(--text-body-size)',lineHeight:'var(--leading-body)',color:'var(--text-muted)',textAlign:'center'}}>Adjust and reuse what's already there, no rewriting <a href="#" style={{color:'var(--accent)',fontWeight:600,fontStyle:'italic',textDecoration:'none',whiteSpace:'nowrap'}}>→ Live demo</a></p>
+    <div>
+      <div key={'rb'+tick} style={{display:'flex',alignItems:'center',opacity:0.75}}>
+        {[0,1,2,3,4].map(i=><div key={i} style={{width:46,height:26,background:'#DDE3DE',border:'1px solid #B9C2BA',marginLeft:i?-1:0,animation:'rebuildIn 420ms var(--ease-brand) both',animationDelay:(i*160)+'ms',transformOrigin:'left center'}}/>)}
+        <div style={{width:22,height:22,borderRadius:'50%',background:'var(--ink-900)',color:'#fff',display:'grid',placeItems:'center',fontSize:12,lineHeight:1,marginLeft:12}}>✕</div>
+      </div>
+      <Cap t="linear pipeline - rewritten every time"/>
+    </div>
+    <div>
+      <div style={{display:'flex',gap:10,alignItems:'center'}}>
+        {[0,1,2,3,4].map(i=><div key={i===swapIdx?'s'+tick:i} style={{width:60,height:40,borderRadius:11,background:i===swapIdx?greens[tick%3]:'var(--paper-0)',border:'1.5px solid var(--accent)',boxShadow:i===swapIdx?'0 8px 20px rgba(35,164,85,.35)':'0 2px 8px rgba(14,18,15,.06)',animation:i===swapIdx?'swapSpring 800ms var(--ease-brand) both':'none',transform:i===swapIdx?'scale(1.06)':'scale(1)'}}/>)}
+        <div style={{width:26,height:26,borderRadius:'50%',background:'var(--accent)',color:'#fff',display:'grid',placeItems:'center',fontSize:14,marginLeft:4}}>✓</div>
+      </div>
+      <Cap t="mloda - swap one plugin, rest untouched"/>
+    </div>
+  </div>;
+}
+function Plugins(){
+  const examples=[
+    ['income','__sum_aggr'],
+    ['age','__avg_aggr'],
+    ['user_query','__injection_checked','__retrieved','__pii_redacted']
+  ];
+  const [tick,setTick]=React.useState(0);
+  const [hover,setHover]=React.useState(false);
+  React.useEffect(()=>{if(hover)return;const t=setInterval(()=>setTick(v=>v+1),6000);return ()=>clearInterval(t)},[hover]);
+  let d=0;
+  return <section id="plugins" style={{padding:'36px 24px 64px',maxWidth:1200,margin:'0 auto'}}>
+    <SectionHeader title={<span>Plug and play data plugins -<br/>define, chain, swap</span>} align="center"/>
+    <p style={{margin:'28px 0 0',fontSize:'var(--text-body-size)',lineHeight:'var(--leading-body)',color:'var(--text-muted)',textAlign:'center'}}>Compose data pipelines like words <a href="#" style={{color:'var(--accent)',fontWeight:600,fontStyle:'italic',textDecoration:'none',whiteSpace:'nowrap'}}>→ Live demo</a></p>
+    <div key={tick} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)}
+      style={{marginTop:22,display:'flex',flexDirection:'column',alignItems:'center',gap:14}}>
+      {examples.map((ex,ri)=>{
+        const row=<div key={ri} style={{display:'flex',alignItems:'center',flexWrap:'wrap',justifyContent:'center',gap:8}}>
+          <div style={{background:'var(--ink-900)',color:'#fff',borderRadius:10,padding:'9px 15px',fontFamily:'var(--font-mono)',fontSize:14.5,fontWeight:500,lineHeight:'19px',animation:'plugIn 400ms var(--ease-brand) both',animationDelay:(d++*450)+'ms'}}>{ex[0]}</div>
+          {ex.slice(1).map(s=><div key={s} style={{borderRadius:10,border:'1px solid var(--accent)',background:'var(--paper-0)',padding:'9px 14px',fontFamily:'var(--font-mono)',fontSize:14,color:'var(--accent)',whiteSpace:'nowrap',lineHeight:'19px',animation:'plugIn 400ms var(--ease-brand) both',animationDelay:(d++*450)+'ms'}}>{s}</div>)}
+        </div>;
+        return row;
+      })}
+    </div>
+    
+    <PluginAnimOptions/>
   </section>;
 }
 function HowItWorks(){
   const steps=[['1','Connect what you already have','Wrap your DB, API, or files in a FeatureGroup - a small plugin, not a rewrite. Set it up once, reuse it everywhere.','connect'],
     ['2','Let your agent ask','Agents declare features by name - no pipeline code, no glue. Need processing? Add a suffix: __scored, __aggregated, and more.','declare'],
     ['3','Get data, fully traced','mloda resolves the dependency chain on your compute engine and returns results with lineage built in.','resolve']];
-  return <section id="how-it-works" style={{padding:'36px 24px 80px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title="How it works" lede="Three steps from your existing stack to traceable, self-serve data access." align="center"/>
-    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20,marginTop:48}}>
+  return <section id="how-it-works" style={{padding:'0 24px 80px',maxWidth:1200,margin:'0 auto'}}>
+    <p style={{margin:'-14px 0 48px',fontSize:'var(--text-body-size)',lineHeight:'var(--leading-body)',color:'var(--text-muted)',textAlign:'center'}}><span style={{color:'var(--accent)',fontWeight:600}}>mloda</span> fits into your existing stack - connect, ask, get traced data.<br/>Three steps to wire it in.</p>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
       {steps.map(([n,h,p,g])=><div key={n} style={{background:'var(--paper-1)',border:'1px solid var(--line-light)',borderRadius:'var(--radius-card)',overflow:'hidden',display:'flex',flexDirection:'column'}}>
         <div style={{padding:'18px 18px 0'}}><StepGraphic kind={g}/></div>
         <div style={{padding:24,display:'flex',flexDirection:'column',gap:8}}>
@@ -213,29 +284,29 @@ function Trusted({bright}){
   const scroll=dir=>railRef.current&&railRef.current.scrollBy({left:dir*480,behavior:'smooth'});
   return <section id="built-with-mloda" style={{padding:'48px 0 80px',background:bright?'var(--paper-0)':'var(--paper-1)'}}>
     <div style={{maxWidth:1200,margin:'0 auto',padding:'0 24px',position:'relative'}}>
-      <SectionHeader title="Built with mloda" align="center"/>
+      <SectionHeader title="Use cases" align="center"/>
       <div style={{display:'flex',gap:10,position:'absolute',right:24,bottom:0}}>
         <IconButton iconSrc={A+'icons/arrow-right-line.svg'} label="Prev" style={{transform:'scaleX(-1)'}} onClick={()=>scroll(-1)}/>
         <IconButton iconSrc={A+'icons/arrow-right-line.svg'} label="Next" onClick={()=>scroll(1)}/>
       </div>
     </div>
     <div ref={railRef} style={{display:'flex',gap:20,padding:'44px 24px 0',overflowX:'auto',maxWidth:1200,margin:'0 auto',boxSizing:'border-box',scrollbarWidth:'none'}}>
-      <UseCaseCard repo="open-kgo" eyebrow="open-kgo · Knowledge graphs" title="Every knowledge graph, one interface" desc="Nine connector families - SPARQL endpoints, SBOMs, data lineage, agent memory - all behind one declarative Feature. Runs fully offline: no Docker, no network." style={{width:390,flexShrink:0}}
+      <UseCaseCard repo="open-kgo" eyebrow="open-kgo · Knowledge graphs" title="Let agents use knowledge graphs" desc="An agent answers questions across knowledge sources - company graphs, software inventories, even its own memory - with one simple request. Runs fully offline: nothing leaves your machine." style={{width:390,flexShrink:0}}
         art={<svg viewBox="0 0 390 150" style={{width:'100%',height:'100%'}}>
           {[[70,75],[150,38],[150,112],[240,75],[320,40],[320,110]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="11" fill={i===3?'var(--accent)':'none'} stroke="var(--green-400)" strokeWidth="2"/>)}
           {[[70,75,150,38],[70,75,150,112],[150,38,240,75],[150,112,240,75],[240,75,320,40],[240,75,320,110]].map(([a,b,c,d],i)=><line key={i} x1={a} y1={b} x2={c} y2={d} stroke="var(--green-400)" strokeWidth="1.4" opacity=".55"/>)}
-          <text x="195" y="140" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--text-on-dark-2)">SPARQL · SBOM · lineage · agent memory</text>
+          <text x="195" y="140" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--text-on-dark-2)">knowledge graphs · inventories · agent memory</text>
         </svg>}/>
-      <UseCaseCard repo="rag_integration" eyebrow="rag_integration · RAG pipelines" title="A production RAG pipeline, declared in one line" desc="docs__pii_redacted__chunked__deduped__embedded - PII redaction, chunking, dedup, FAISS retrieval and LLM response as swappable mloda stages." style={{width:390,flexShrink:0}}
+      <UseCaseCard repo="rag_integration" eyebrow="rag_integration · RAG pipelines" title="A document chatbot, declared in one line" desc="Point it at your documents: personal data is removed, texts are split and prepared, and the right passages reach your chatbot. Every step is a plugin you can swap." style={{width:390,flexShrink:0}}
         art={<svg viewBox="0 0 390 150" style={{width:'100%',height:'100%'}}>
           {['docs','pii','chunk','dedup','embed'].map((t,i)=><g key={t}>
             <rect x={22+i*72} y="58" width="58" height="34" rx="9" fill={i===4?'var(--accent)':'none'} stroke="var(--green-400)" strokeWidth="1.6"/>
             <text x={51+i*72} y="79" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="11" fill={i===4?'#fff':'var(--green-400)'}>{t}</text>
             {i<4&&<text x={80+i*72+7} y="79" fontFamily="var(--font-mono)" fontSize="11" fill="var(--sand-300)">__</text>}
           </g>)}
-          <text x="195" y="128" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--text-on-dark-2)">retrieve · rerank · generate · graph RAG</text>
+          <text x="195" y="128" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--text-on-dark-2)">clean · split · search · answer</text>
         </svg>}/>
-      <UseCaseCard repo="mloda-plugin-govdata" eyebrow="govdata · Open government data" title="Public-sector data, agent-ready" desc="Open government datasets wrapped as mloda FeatureGroups. Funded by the German Federal Ministry of Research via the Prototype Fund." style={{width:390,flexShrink:0}}
+      <UseCaseCard repo="mloda-plugin-govdata" eyebrow="govdata · Open government data" title="Public-sector data, agent-ready" desc="German open government data made usable for AI agents - ask for a dataset, get it clean and traceable. Funded by the German Federal Ministry of Research via the Prototype Fund." style={{width:390,flexShrink:0}}
         art={<svg viewBox="0 0 390 150" style={{width:'100%',height:'100%'}}>
           <path d="M155 52 L195 30 L235 52 Z" fill="none" stroke="var(--green-400)" strokeWidth="2"/>
           {[0,1,2,3].map(i=><rect key={i} x={160+i*19} y="58" width="9" height="34" fill="none" stroke="var(--green-400)" strokeWidth="1.6"/>)}
@@ -243,8 +314,18 @@ function Trusted({bright}){
           {[[70,60],[70,86],[298,60],[298,86]].map(([x,y],i)=><g key={i}><rect x={x-28} y={y-9} width="56" height="18" rx="5" fill="none" stroke="var(--green-400)" strokeWidth="1.2" opacity=".6"/><line x1={x+(x<195?28:-28)} y1={y} x2={x<195?148:242} y2="75" stroke="var(--green-400)" strokeWidth="1.2" opacity=".45"/></g>)}
           <text x="195" y="133" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--text-on-dark-2)">Prototype Fund · BMFTR · Apache-2.0</text>
         </svg>}/>
+      <UseCaseCard repo="mloda" eyebrow="credit risk · Financial services" title="A credit risk agent, fully auditable" desc="An AI agent asks for credit risk scores - mloda pools the data sources, runs the calculations, and returns scores with a full audit trail for every value." style={{width:390,flexShrink:0}}
+        art={<svg viewBox="0 0 390 150" style={{width:'100%',height:'100%'}}>
+          {['ask','pool','score'].map((t,i)=><g key={t}>
+            <rect x={40+i*95} y="55" width="70" height="34" rx="9" fill={i===2?'var(--accent)':'none'} stroke="var(--green-400)" strokeWidth="1.6"/>
+            <text x={75+i*95} y="76" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="11" fill={i===2?'#fff':'var(--green-400)'}>{t}</text>
+            {i<2&&<line x1={110+i*95} y1="72" x2={135+i*95} y2="72" stroke="var(--green-400)" strokeWidth="1.4" opacity=".55"/>}
+          </g>)}
+          <path d="M330 55 v34 h24" fill="none" stroke="var(--green-400)" strokeWidth="1.4" opacity=".55"/>
+          <text x="195" y="128" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--text-on-dark-2)">ask · pool · score · audit trail</text>
+        </svg>}/>
     </div>
-    <div style={{marginTop:56}}><LogoWall names={['Credit risk agent','Climate risk agent','Customer Service agent','RAG system','Context assembly','Openclaw-like agent']}/></div>
+    <div style={{marginTop:56}}><LogoWall names={['Credit risk agent','Climate risk agent','Customer service agent','RAG system','Context assembly','Openclaw-like agent']}/></div>
   </section>;
 }
 function Stories(){
@@ -256,7 +337,7 @@ function Stories(){
     <div style={{display:'flex',gap:20,marginTop:44,flexWrap:'wrap'}}>
       <CaseStudyCard linkLabel="Read more" logoText="Docs" title="Declarative data access: why agents should say what, not how"/>
       <CaseStudyCard linkLabel="Read our case study" logoText="Case study" industry="Finance" title="How a risk team made every feature auditable with mloda"/>
-      <CaseStudyCard linkLabel="Read post" logoText="Release" title="mloda 0.3: lineage API and new source connectors"/>
+      <CaseStudyCard linkLabel="Read post" logoText="Release" title="mloda 0.10: lineage API and new source connectors"/>
     </div>
   </section>;
 }
@@ -275,9 +356,9 @@ function CopyPromptButton({label,prompt,popup,hint}){
 }
 function GetStarted(){
   const AGENT_PROMPT='Wire mloda into this project: pip install mloda, then wrap my existing data sources (databases, files, APIs) as FeatureGroups and replace ad-hoc data-fetching code with declarative mlodaAPI.run() feature requests. Docs: https://github.com/mloda-ai/mloda';
-  const opts=[["pip install","Get running in minutes: pip install mloda and declare your first Feature.","Quickstart","pip"],["GitHub","Star the repo, read the source, open an issue - mloda is built in the open.","View on GitHub","https://github.com/mloda-ai/mloda"],["Agents","Wire mloda into your agent stack so every data request is resolved and logged.","Wire in mloda","agent"]];
-  return <section style={{padding:'48px 24px 90px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader eyebrow="Get started" title="Data access, where your agents need it" lede="One entry point for every source - structured or unstructured, local files, databases, APIs. Same library, from notebook to production." align="center"/>
+  const opts=[["Install it yourself","Copy one command - pip install mloda and declare your first Feature in minutes.","pip install","pip"],["Explore the source","Star the repo, read the code, open an issue - mloda is built in the open.","View on GitHub","https://github.com/mloda-ai/mloda"],["Let your coding agent do it","Copy one prompt - your coding agent installs mloda and wires it into your project.","Copy the prompt","agent"]];
+  return <section style={{padding:'48px 24px 68px',maxWidth:1200,margin:'0 auto'}}>
+    <SectionHeader title="Get started" lede="Three ways in - install the library, explore the source, or let your coding agent wire it up. Same library, from notebook to production." align="center"/>
     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20,marginTop:52}}>
       {opts.map(([h,p,cta,href])=><div key={h} style={{background:'var(--paper-1)',border:'1px solid var(--line-light)',borderRadius:'var(--radius-card)',padding:28,display:'flex',flexDirection:'column',gap:12}}>
         <h3 style={{margin:0,fontSize:'var(--text-h3)',fontWeight:600}}>{h}</h3>
@@ -292,15 +373,15 @@ function GradientCTA(){
     <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',opacity:.3,mixBlendMode:'overlay'}}><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
     <div style={{position:'relative'}}>
       <img src={A+'mloda-wordmark.svg'} alt="mloda" style={{height:72,filter:'brightness(0) invert(1)'}}/>
-      <h2 style={{margin:'30px 0 0',fontSize:'clamp(30px,3.4vw,44px)',fontWeight:600,letterSpacing:'var(--tracking-display)'}}>Start building with mloda today</h2>
+      <h2 style={{margin:'30px 0 0',fontSize:'clamp(30px,3.4vw,44px)',fontWeight:600,letterSpacing:'var(--tracking-display)'}}>Start building with us today.</h2>
       <div style={{display:'flex',gap:12,justifyContent:'center',marginTop:34}}>
         <Button label="Talk to us" variant="white" href="https://calendly.com/hello-mloda/30min"/>
         <Button label="Try for free" variant="ink" href="https://github.com/mloda-ai/mloda"/>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,minmax(200px,260px))',gap:16,justifyContent:'center',marginTop:44}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,minmax(200px,260px))',gap:16,justifyContent:'center',marginTop:72}}>
         {[['Free','Full open-source library. Every source, every feature, Apache-2.0 licensed.','View on GitHub','https://github.com/mloda-ai/mloda'],
           ['Plugin Bundles','Curated connector and transform packs for common stacks.','Coming soon',null],
-          ['Customized Contract','Support, SLAs, and integrations tailored to your organization.','Talk to us','https://calendly.com/hello-mloda/30min']].map(([h,p,cta,href])=>
+          ['Customized Contract','Support, SLAs, and integrations tailored to your organization.','Contact','https://calendly.com/hello-mloda/30min']].map(([h,p,cta,href])=>
         <div key={h} style={{background:'rgba(255,255,255,.10)',border:'1px solid rgba(255,255,255,.28)',borderRadius:'var(--radius-card)',padding:'24px 22px',display:'flex',flexDirection:'column',gap:10,textAlign:'left',backdropFilter:'blur(4px)'}}>
           <h3 style={{margin:0,fontSize:19,fontWeight:600}}>{h}</h3>
           <p style={{margin:0,fontSize:13.5,lineHeight:1.5,color:'rgba(255,255,255,.8)',flex:1}}>{p}</p>
@@ -323,16 +404,17 @@ function App(){
       '--shadow-panel':'0 24px 60px rgba(0,0,0,.6)'}:{}),
     background:'var(--paper-0)',color:'var(--text-ink)',
     '--font-sans':`'${t.font}',Helvetica,Arial,sans-serif`,fontFamily:'var(--font-sans)'};
-  const motion={calm:{slide:4200,wall:55},regular:{slide:1700,wall:30},energetic:{slide:1300,wall:14}}[t.motion];
+  const motion={calm:{slide:7000,wall:55},regular:{slide:2800,wall:30},energetic:{slide:2100,wall:14}}[t.motion];
   return <div style={vars}>
-  <a href="https://github.com/mloda-ai/mloda" target="_blank" style={{display:'block',background:'var(--accent)',color:'#fff',textAlign:'center',padding:'5px 12px',fontSize:13,fontFamily:'var(--font-mono)',textDecoration:'none'}}>mloda 0.10.0 is out — see what's new on GitHub →</a>
+  <a href="https://github.com/mloda-ai/mloda" target="_blank" style={{display:'block',background:'var(--accent)',color:'#fff',textAlign:'center',padding:'5px 12px',fontSize:13,fontFamily:'var(--font-mono)',textDecoration:'none'}}>mloda 0.10.0 is out — free and open source under Apache-2.0 →</a>
   <Navbar logoSrc={A+'mloda-wordmark-green.svg'} items={['Products','Features','Docs','GitHub','About']} cta="Try mloda now" ctaHref="https://github.com/mloda-ai/mloda"/>
   <Hero/>
   <ProductPanel interval={motion.slide} bright={t.panel==='bright'}/>
   <DataSources logoWall={<LogoWall names={['CSV','JSON','Parquet','Feather','ORC','Plain text','Markdown','YAML','SQLite','API / runtime data']} speed={motion.wall}/>}/>
-  <HowItWorks/>
+  <Plugins/>
   <Trusted bright={t.panel==='bright'}/>
   <GetStarted/>
+  <HowItWorks/>
   <GradientCTA/>
   <Footer logoSrc={A+'mloda-wordmark.svg'} columns={{Product:[['How it works','#how-it-works'],['Lineage','#lineage'],['Use cases','#built-with-mloda']],Developers:[['Docs','https://github.com/mloda-ai/mloda#readme'],['Quickstart',copyAgentPrompt],['GitHub','https://github.com/mloda-ai/mloda'],['PyPI','https://pypi.org/project/mloda/']],Company:['About','Blog','Contact'],Legal:['Imprint','Privacy Policy','Terms']}}/>
   <TweaksPanel>
