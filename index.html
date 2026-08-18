@@ -99,7 +99,7 @@ function DataSources({logoWall}){
   const [hov,setHov]=React.useState(null);
   const curve=i=>{const ys=[24,41,59,76];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section id="how-it-works" style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="With mloda the data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after. Each step says what it needs, so you ask for the result and mloda finds the rest." align="center"/>
+    <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="With mloda the data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after. Each step says what it needs, so you ask for the result and mloda finds the right steps." align="center"/>
     <div style={{display:'grid',gridTemplateColumns:'minmax(170px,200px) minmax(560px,1fr)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
