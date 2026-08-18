@@ -114,8 +114,6 @@ function DataSources({logoWall}){
           <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:6,maxWidth:250}}>
             {steps.map(s=><span key={s} style={{border:'1px solid var(--accent)',background:'var(--paper-0)',color:'var(--accent)',borderRadius:8,padding:'3px 9px',fontFamily:'var(--font-mono)',fontSize:11.5,whiteSpace:'nowrap'}}>{s}</span>)}
           </div>
-          <a href="#steps" onClick={(e)=>{e.preventDefault();const el=document.getElementById('steps');if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-40,behavior:'smooth'})}}
-            style={{fontSize:12.5,fontWeight:600,color:'var(--accent)',textDecoration:'none'}}>about 30 ready-made steps →</a>
         </div>
         <div onMouseEnter={()=>setAgentOpen(true)} onMouseLeave={()=>{setAgentOpen(false);setCopied(false)}}
           onClick={()=>copyToClipboard(AGENT_PROMPT,()=>setCopied(true))}
