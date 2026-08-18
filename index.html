@@ -98,7 +98,7 @@ function DataSources({logoWall}){
   const curve=i=>{const ys=[10,32,68,90];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section id="how-it-works" style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
     <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="The data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after." align="center"/>
-    <div style={{display:'grid',gridTemplateColumns:'minmax(220px,260px) minmax(560px,1fr) minmax(140px,170px)',gap:0,alignItems:'center',marginTop:20}}>
+    <div style={{display:'grid',gridTemplateColumns:'minmax(220px,260px) minmax(560px,1fr)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
           style={{position:'relative',background:'var(--paper-0)',border:hov===i?'1px solid var(--accent)':'1px solid var(--text-ink)',borderRadius:'var(--radius-card)',padding:'16px 20px',cursor:'default',transition:'all 250ms var(--ease-brand)',boxShadow:hov===i?'0 8px 24px rgba(14,18,15,.10)':'none'}}>
@@ -111,7 +111,7 @@ function DataSources({logoWall}){
       <div style={{position:'relative',alignSelf:'stretch',minHeight:340,minWidth:0,display:'flex',alignItems:'center',justifyContent:'flex-start',gap:14,padding:'0 8px'}}>
         <svg viewBox="0 0 560 100" preserveAspectRatio="none" style={{position:'absolute',inset:0,width:'100%',height:'100%',zIndex:0}}>
           {srcs.map((s,i)=><path key={i} d={curve(i)} fill="none" stroke={hov===i?'var(--accent)':'rgba(15,23,32,.24)'} strokeWidth={hov===i?1.6:1.2} strokeDasharray="4 5" style={{transition:'stroke 250ms'}} vectorEffect="non-scaling-stroke"/>)}
-          <line x1="160" y1="50" x2="560" y2="50" stroke="rgba(15,23,32,.24)" strokeWidth="1.2" strokeDasharray="4 5" vectorEffect="non-scaling-stroke"/>
+          <line x1="160" y1="50" x2="520" y2="50" stroke="rgba(15,23,32,.24)" strokeWidth="1.2" strokeDasharray="4 5" vectorEffect="non-scaling-stroke"/>
         </svg>
         <div style={{flex:'0 0 calc(28.5% - 64px)'}}/>
         <div style={{position:'relative',zIndex:1,background:'var(--accent)',color:'#fff',borderRadius:14,padding:'16px 30px',fontFamily:'Helvetica,Arial,sans-serif',fontWeight:600,fontSize:24}}>mloda</div>
@@ -125,10 +125,7 @@ function DataSources({logoWall}){
             </div>})}
             <div style={{borderRadius:8,padding:'6px 10px',fontFamily:'var(--font-mono)',fontSize:12,textAlign:'center',border:'1px dashed rgba(15,23,32,.4)',color:'var(--text-muted)'}}>+ your step</div>
           </div>
-      </div>
-      <div style={{display:'flex',alignItems:'center',minWidth:0}}>
-        <div style={{flex:1,minWidth:14,borderTop:'1.5px dashed rgba(15,23,32,.35)'}}/>
-        <div style={{border:'1.5px solid var(--accent)',borderRadius:14,padding:'12px 14px',fontSize:13,color:'var(--text-ink)',lineHeight:1.45,maxWidth:160}}>
+        <div style={{position:'relative',zIndex:1,marginLeft:60,border:'1.5px solid var(--accent)',background:'var(--paper-0)',borderRadius:14,padding:'12px 14px',fontSize:13,color:'var(--text-ink)',lineHeight:1.45,maxWidth:160}}>
           <div style={{fontFamily:'var(--font-mono)',fontWeight:700,marginBottom:4}}>The result</div>
           A table, text or documents, ready to use.
         </div>
