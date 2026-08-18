@@ -97,7 +97,7 @@ function DataSources({logoWall}){
   const [hov,setHov]=React.useState(null);
   const curve=i=>{const ys=[10,32,68,90];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section id="how-it-works" style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title={<span>Why is every new AI question<br/>a new data project?</span>} lede="The data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after." align="center"/>
+    <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="The data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after." align="center"/>
     <div style={{display:'grid',gridTemplateColumns:'minmax(220px,260px) minmax(560px,1fr) minmax(140px,170px)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
@@ -115,17 +115,7 @@ function DataSources({logoWall}){
         </svg>
         <div style={{flex:'0 0 calc(28.5% - 64px)'}}/>
         <div style={{position:'relative',zIndex:1,background:'var(--accent)',color:'#fff',borderRadius:14,padding:'16px 30px',fontFamily:'Helvetica,Arial,sans-serif',fontWeight:600,fontSize:24}}>mloda</div>
-        <div style={{position:'relative',zIndex:1,flexShrink:0,marginTop:-7,marginLeft:30}}>
-          <svg viewBox="0 0 44 40" style={{width:52,display:'block'}}>
-            <line x1="14" y1="10" x2="8" y2="2" stroke="var(--text-ink)" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="30" y1="10" x2="36" y2="2" stroke="var(--text-ink)" strokeWidth="2" strokeLinecap="round"/>
-            <rect x="6" y="10" width="32" height="26" rx="6" fill="var(--paper-0)" stroke="var(--text-ink)" strokeWidth="2"/>
-            <circle cx="17" cy="21" r="2.4" fill="var(--accent)"/><circle cx="27" cy="21" r="2.4" fill="var(--accent)"/>
-            <path d="M16 28 q6 5 12 0" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </div>
-        <div style={{position:'relative',zIndex:1,flexShrink:0,display:'flex',flexDirection:'column',alignItems:'stretch',gap:6,width:190,background:'var(--paper-0)',padding:'6px 0'}}>
-            <div style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--text-muted)',textAlign:'center',marginBottom:2}}>Your AI agent asked</div>
+        <div style={{position:'relative',zIndex:1,flexShrink:0,display:'flex',flexDirection:'column',alignItems:'stretch',gap:6,width:190,background:'var(--paper-0)',padding:'6px 0',marginLeft:60}}>
             {name.map(([plain,code],i)=>{const same=tick>0&&prev[i][1]===code;return <div key={i+':'+code} style={{position:'relative',borderRadius:8,padding:'6px 10px 5px',textAlign:'center',
               background:i===0?'var(--ink-900)':'var(--paper-0)',color:i===0?'#fff':'var(--text-ink)',border:i===0?'1px solid var(--ink-900)':'1px solid var(--accent)',
               animation:same?'none':'plugIn 380ms var(--ease-brand) both',animationDelay:(i*220)+'ms'}}>
