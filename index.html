@@ -34,8 +34,8 @@ function copyToClipboard(txt,done){const fb=()=>{const ta=document.createElement
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>done&&done()).catch(fb)}else{fb()}}
 function Hero(){
   return <section style={{padding:'120px 24px 60px',textAlign:'center',maxWidth:1020,margin:'0 auto'}}>
-    <h1 style={{margin:0,fontSize:'clamp(36px,4.5vw,68px)',fontWeight:600,letterSpacing:'var(--tracking-display)',lineHeight:'var(--leading-tight)'}}>Connect your AI to all data<br/>in one entry point, in the form it needs.</h1>
-    <p style={{margin:'26px auto 0',maxWidth:660,fontSize:16,lineHeight:1.4,color:'var(--text-muted)'}}>An open-source library that lets AI agents declare the finished result. mloda gets the data, cleans it, joins it, removes personal data, and hands back the result ready to use. Each step is a small piece of code, written once and reusable for all use cases.</p>
+    <h1 style={{margin:0,fontSize:'clamp(36px,4.5vw,68px)',fontWeight:600,letterSpacing:'var(--tracking-display)',lineHeight:'var(--leading-tight)'}}>The missing layer between<br/>your data and your AI.</h1>
+    <p style={{margin:'26px auto 0',maxWidth:680,fontSize:16,lineHeight:1.4,color:'var(--text-muted)'}}>Today every new AI question becomes a new data project: fetch, clean, join, wire, again. mloda is the step in between. Register small steps once, each saying what it needs. Then any request, from a person or an agent, decides which steps run. New question, no new wiring, and every answer can show how it was made.</p>
     <div style={{display:'flex',gap:12,justifyContent:'center',marginTop:34}}>
       <Button label="Talk to us" variant="ink" size="lg" href="https://calendly.com/hello-mloda/30min"/>
       <Button label="Free on GitHub" variant="primary" size="lg" href="https://github.com/mloda-ai/mloda"/>
@@ -99,7 +99,7 @@ function DataSources({logoWall}){
   const [hov,setHov]=React.useState(null);
   const curve=i=>{const ys=[24,41,59,76];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section id="how-it-works" style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="With mloda the data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after. Each step says what it needs, so you ask for the result and mloda finds the right steps." align="center"/>
+    <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="Because the wiring is redone every time: fetch, clean, join, written for one question and thrown away. With mloda the work becomes small steps, registered once. Each step says what it needs, so you ask for the result and mloda finds the right steps, adds the ones you did not name, and reuses them for every question after." align="center"/>
     <div style={{display:'grid',gridTemplateColumns:'minmax(170px,200px) minmax(560px,1fr)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
@@ -138,6 +138,52 @@ function DataSources({logoWall}){
     {logoWall&&<div style={{marginTop:0}}>{logoWall}</div>}
   </section>;
 }
+function StepInCode(){
+  const code=`from mloda.user import mloda, Feature
+from mloda.provider import FeatureGroup
+
+class RiskScore(FeatureGroup):
+    def input_features(self, options, name):
+        return {Feature("income"), Feature("debt")}
+
+    @classmethod
+    def calculate_feature(cls, data, features):
+        data["RiskScore"] = data["debt"] / data["income"]
+        return data`;
+  const call=`risk = mloda.run_all([Feature("RiskScore")])`;
+  const facts=[['You wrote','one step. It names what it needs (income, debt) and how it computes.'],['You asked for','RiskScore. Nothing else.'],['mloda did','find the steps that produce income and debt, run them, run yours, and keep the trace of all three.']];
+  return <section id="one-step" style={{padding:'36px 24px 48px',maxWidth:1200,margin:'0 auto'}}>
+    <SectionHeader title="One step, in code." lede="A step is a small Python class. It says what it needs and how it computes. In the Python API a step is called a FeatureGroup." align="center"/>
+    <div style={{display:'grid',gridTemplateColumns:'1.25fr 1fr',gap:28,marginTop:36,alignItems:'stretch'}}>
+      <div style={{background:'var(--ink-900)',color:'var(--text-on-dark)',borderRadius:'var(--radius-panel)',padding:'22px 26px',fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.6,overflowX:'auto'}}>
+        <div style={{fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:'var(--text-on-dark-2)',marginBottom:10}}>the step</div>
+        <pre style={{margin:0,fontFamily:'inherit',whiteSpace:'pre'}}>{code}</pre>
+        <div style={{fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:'var(--text-on-dark-2)',margin:'18px 0 8px'}}>the request</div>
+        <pre style={{margin:0,fontFamily:'inherit',whiteSpace:'pre',color:'var(--green-400)'}}>{call}</pre>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        {facts.map(([h,p])=><div key={h} style={{background:'var(--paper-1)',border:'1px solid var(--line-light)',borderRadius:'var(--radius-card)',padding:'16px 20px'}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:'var(--accent)'}}>{h}</div>
+          <p style={{margin:'6px 0 0',fontSize:14.5,lineHeight:1.5,color:'var(--text-ink)'}}>{p}</p>
+        </div>)}
+        <p style={{margin:'6px 0 0',fontSize:13.5,lineHeight:1.5,color:'var(--text-muted)'}}>mloda is a Python library. Your AI reaches it the way it reaches any Python: a tool call, a script, or a skill you give your coding agent. A person reaches it from a notebook.</p>
+      </div>
+    </div>
+  </section>;
+}
+function TraceAndLane(){
+  const cards=[
+    ['Every result explains itself','Each result carries its trace: which sources were read, which steps ran, and which version of each. A wrong number walks back to the step that made it. Tab 3 of the demo above shows it for the risk score.'],
+    ['Not another pipeline tool','mloda does not schedule, store, or serve. It is the step in between: it computes what a request needs, from your sources, on your engine (Pandas, Polars, Spark, DuckDB), and hands the result to your AI. Keep Airflow, dbt, or Feast. They dock on.']];
+  return <section id="trace" style={{padding:'12px 24px 56px',maxWidth:1200,margin:'0 auto'}}>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+      {cards.map(([h,p],i)=><div key={h} style={{background:i===0?'var(--ink-900)':'var(--paper-1)',color:i===0?'var(--text-on-dark)':'var(--text-ink)',border:'1px solid var(--line-light)',borderRadius:'var(--radius-panel)',padding:'28px 30px'}}>
+        <h3 style={{margin:0,fontSize:21,fontWeight:600}}>{h}</h3>
+        <p style={{margin:'10px 0 0',fontSize:15,lineHeight:1.55,color:i===0?'var(--text-on-dark-2)':'var(--text-muted)'}}>{p}</p>
+      </div>)}
+    </div>
+  </section>;
+}
 function PluginAnimOptions(){
   const [tick,setTick]=React.useState(0);
   React.useEffect(()=>{const t=setInterval(()=>setTick(v=>v+1),3000);return()=>clearInterval(t)},[]);
@@ -173,7 +219,7 @@ function Plugins(){
   React.useEffect(()=>{if(hover)return;const t=setInterval(()=>setTick(v=>v+1),7000);return ()=>clearInterval(t)},[hover]);
   let d=0;
   return <section id="steps" style={{padding:'36px 24px 64px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title={<span>One name, all the steps.</span>} lede="Add a word, add a step. Every word after the name is one step, and mloda runs them in order." align="center"/>
+    <SectionHeader title={<span>One name, all the steps.</span>} lede="Add a word, add a step. Every word after the name is one step, and mloda runs them in order. Or ask only for the result, and mloda works out the chain from what each step needs." align="center"/>
     <div key={tick} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)}
       style={{marginTop:32,display:'flex',flexDirection:'column',alignItems:'center',gap:22}}>
       {examples.map((ex,ri)=><div key={ri} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8}}>
@@ -184,7 +230,7 @@ function Plugins(){
         <div style={{fontSize:14,lineHeight:1.5,color:'var(--text-muted)',textAlign:'center',animation:'plugIn 400ms var(--ease-brand) both',animationDelay:(d*450)+'ms'}}>{ex.plain.join(' ')}</div>
       </div>)}
     </div>
-    <p style={{margin:'30px auto 0',maxWidth:640,fontSize:14.5,lineHeight:1.5,color:'var(--text-muted)',textAlign:'center'}}>About 30 ready-made steps come with mloda: clean, join, add up, average, fill gaps, put on the same scale, score, remove personal data, cut into pieces, make searchable. Missing one? Write it once as a small piece of code, and every request can use it. Works the same on the tools you already use (Pandas, Polars, Spark, DuckDB).</p>
+    <p style={{margin:'30px auto 0',maxWidth:640,fontSize:14.5,lineHeight:1.5,color:'var(--text-muted)',textAlign:'center'}}>About 30 ready-made steps come with mloda: cleaning, joins, sums and averages, imputation, scaling, scoring, PII redaction, chunking, embedding. Missing one? Write it once as a small piece of code, and every request can use it. The same step definition runs on Pandas, Polars, Spark, or DuckDB.</p>
 
     <PluginAnimOptions/>
   </section>;
@@ -315,7 +361,7 @@ function GradientCTA(){
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(220px,300px))',gap:16,justifyContent:'center',marginTop:72}}>
         {[['Open source','Free to use. The library, all steps that ship with it, and the sets built on it. Apache-2.0.','Read the docs',DOCS],
-          ['Custom','We build and support your steps and connections, and set up who may run which step and what ran. Contact us.','Talk to us','https://calendly.com/hello-mloda/30min']].map(([h,p,cta,href])=>
+          ['Custom','We build and support your steps and connections, and set up access control and an audit log: who may run which step, and what ran. Contact us.','Talk to us','https://calendly.com/hello-mloda/30min']].map(([h,p,cta,href])=>
         <div key={h} style={{background:'rgba(255,255,255,.10)',border:'1px solid rgba(255,255,255,.28)',borderRadius:'var(--radius-card)',padding:'24px 22px',display:'flex',flexDirection:'column',gap:10,textAlign:'left',backdropFilter:'blur(4px)'}}>
           <h3 style={{margin:0,fontSize:19,fontWeight:600}}>{h}</h3>
           <p style={{margin:0,fontSize:13.5,lineHeight:1.5,color:'rgba(255,255,255,.8)',flex:1}}>{p}</p>
@@ -345,7 +391,9 @@ function App(){
   <Hero/>
   <ProductPanel interval={motion.slide} bright={t.panel==='bright'}/>
   <DataSources logoWall={<LogoWall names={['CSV','JSON','Parquet','Feather','ORC','Plain text','Markdown','YAML','SQLite','API / runtime data']} speed={motion.wall}/>}/>
+  <StepInCode/>
   <Plugins/>
+  <TraceAndLane/>
   <Trusted bright={t.panel==='bright'}/>
   <UseCases/>
   <GetStarted/>
