@@ -83,7 +83,7 @@ function ProductPanel({interval,bright}){
   </section>;
 }
 function DataSources({logoWall}){
-  const srcs=[['Databases','Data lakes, warehouses, SQL stores - queried in place, no copies.'],['Tabular data','Dataframes, CSV, tables - native on Pandas, Polars, Spark.'],['Unstructured data','Text, Markdown, PDF - parsed and ready for retrieval.'],['Models & APIs','Third-party and internal services - wrapped once, reused everywhere.']];
+  const srcs=[['Databases','Data lakes, warehouses, SQL stores - queried in place, no copies.'],['Tabular data','Dataframes, CSV, tables - native on Pandas, Polars, Spark.'],['Unstructured data','Text, Markdown, PDF, knowledge graphs. Prepared for RAG and for your AI to search.'],['Models & APIs','Third-party and internal services - wrapped once, reused everywhere.']];
   const steps=['get','clean','join','add up','score','remove personal data','make searchable'];
   const [hov,setHov]=React.useState(null);
   const [agentOpen,setAgentOpen]=React.useState(false);
