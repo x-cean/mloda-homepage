@@ -97,7 +97,7 @@ function DataSources({logoWall}){
   const [hov,setHov]=React.useState(null);
   const curve=i=>{const ys=[10,32,68,90];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section id="how-it-works" style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
-    <SectionHeader title={<span>Why does every new question for your AI<br/>turn into a data project?</span>} lede="With mloda it does not. The data work is done once, in small steps, and reused for every question after." align="center"/>
+    <SectionHeader title={<span>Why does every new question for your AI<br/>turn into a data project?</span>} lede="The data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after." align="center"/>
     <div style={{display:'grid',gridTemplateColumns:'minmax(220px,260px) minmax(560px,1fr) minmax(140px,170px)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
