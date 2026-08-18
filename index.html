@@ -95,14 +95,14 @@ function DataSources({logoWall}){
   const prev=names[(tick+names.length-1)%names.length];
   const fullName=name.map(([p,c],i)=>c).join('__');
   const [hov,setHov]=React.useState(null);
-  const curve=i=>{const ys=[10,32,68,90];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
+  const curve=i=>{const ys=[24,41,59,76];return `M 0 ${ys[i]} C 60 ${ys[i]}, 90 50, 160 50`};
   return <section id="how-it-works" style={{padding:'36px 24px 44px',maxWidth:1200,margin:'0 auto'}}>
     <SectionHeader title={<span>Why is every new AI question a new data project?</span>} lede="With mloda the data work becomes small steps you can put together in any order, swap when something changes, and reuse for every question after." align="center"/>
-    <div style={{display:'grid',gridTemplateColumns:'minmax(220px,260px) minmax(560px,1fr)',gap:0,alignItems:'center',marginTop:20}}>
+    <div style={{display:'grid',gridTemplateColumns:'minmax(170px,200px) minmax(560px,1fr)',gap:0,alignItems:'center',marginTop:20}}>
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {srcs.map(([h,p],i)=><div key={h} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
-          style={{position:'relative',background:'var(--paper-0)',border:hov===i?'1px solid var(--accent)':'1px solid var(--text-ink)',borderRadius:'var(--radius-card)',padding:'16px 20px',cursor:'default',transition:'all 250ms var(--ease-brand)',boxShadow:hov===i?'0 8px 24px rgba(14,18,15,.10)':'none'}}>
-          <h3 style={{margin:0,fontSize:16,fontWeight:600,color:hov===i?'var(--accent)':'var(--text-ink)',transition:'color 250ms var(--ease-brand)'}}>{h}</h3>
+          style={{position:'relative',background:'var(--paper-0)',border:hov===i?'1px solid var(--accent)':'1px solid var(--text-ink)',borderRadius:'var(--radius-card)',padding:'11px 16px',cursor:'default',transition:'all 250ms var(--ease-brand)',boxShadow:hov===i?'0 8px 24px rgba(14,18,15,.10)':'none'}}>
+          <h3 style={{margin:0,fontSize:14.5,fontWeight:600,color:hov===i?'var(--accent)':'var(--text-ink)',transition:'color 250ms var(--ease-brand)'}}>{h}</h3>
           <div style={{maxHeight:hov===i?60:0,opacity:hov===i?1:0,overflow:'hidden',transition:'all 300ms var(--ease-brand)'}}>
             <p style={{margin:'6px 0 0',fontSize:13.5,lineHeight:1.45,color:'var(--text-muted)'}}>{p}</p>
           </div>
