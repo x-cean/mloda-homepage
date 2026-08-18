@@ -133,8 +133,6 @@ function DataSources({logoWall}){
           A table, text or documents, ready to use.
         </div>
       </div>
-      {[['Keep your tools and pipelines. Connect once.',{}],['Write a step once. Every request reuses it, swap it without touching the rest.',{justifySelf:'end',maxWidth:230,marginRight:150,textAlign:'center'}],['Ready to use. And you can show how it was made.',{justifySelf:'end',maxWidth:170}]].map(([t,st],i)=>
-        <p key={i} style={{margin:'14px 0 0',fontSize:13.5,lineHeight:1.45,color:'var(--text-ink)',fontWeight:500,textAlign:i===0?'left':'right',...st}}>{t}</p>)}
     </div>
     {logoWall&&<div style={{marginTop:0}}>{logoWall}</div>}
   </section>;
