@@ -34,8 +34,8 @@ function copyToClipboard(txt,done){const fb=()=>{const ta=document.createElement
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>done&&done()).catch(fb)}else{fb()}}
 function Hero(){
   return <section style={{padding:'120px 24px 60px',textAlign:'center',maxWidth:1020,margin:'0 auto'}}>
-    <h1 style={{margin:0,fontSize:'clamp(36px,4.5vw,68px)',fontWeight:600,letterSpacing:'var(--tracking-display)',lineHeight:'var(--leading-tight)'}}>The missing layer between<br/>your data and your AI.</h1>
-    <p style={{margin:'26px auto 0',maxWidth:680,fontSize:16,lineHeight:1.4,color:'var(--text-muted)'}}>Today every new AI question becomes a new data project: fetch, clean, join, wire, again. mloda is the step in between. Register small steps once, each saying what it needs. Then any request, from a person or an agent, decides which steps run. New question, no new wiring, and every answer can show how it was made.</p>
+    <h1 style={{margin:0,fontSize:'clamp(36px,4.5vw,68px)',fontWeight:600,letterSpacing:'var(--tracking-display)',lineHeight:'var(--leading-tight)'}}>Your AI asks for the answer.<br/>You decide how it is made.</h1>
+    <p style={{margin:'26px auto 0',maxWidth:700,fontSize:16,lineHeight:1.4,color:'var(--text-muted)'}}>mloda is a free, open-source Python library between your data and your AI. Your team writes each step once: get the data from databases, files, APIs and models, clean it, join it, add it up, score it. From then on your AI asks for a result by name, and mloda does those steps, the same way every time. The result comes back ready to use, with how every number was made. New question, no new data project.</p>
     <div style={{display:'flex',gap:12,justifyContent:'center',marginTop:34}}>
       <Button label="Talk to us" variant="ink" size="lg" href="https://calendly.com/hello-mloda/30min"/>
       <Button label="Free on GitHub" variant="primary" size="lg" href="https://github.com/mloda-ai/mloda"/>
@@ -166,14 +166,31 @@ class RiskScore(FeatureGroup):
           <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:'var(--accent)'}}>{h}</div>
           <p style={{margin:'6px 0 0',fontSize:14.5,lineHeight:1.5,color:'var(--text-ink)'}}>{p}</p>
         </div>)}
-        <p style={{margin:'6px 0 0',fontSize:13.5,lineHeight:1.5,color:'var(--text-muted)'}}>mloda is a Python library. Your AI reaches it the way it reaches any Python: a tool call, a script, or a skill you give your coding agent. A person reaches it from a notebook.</p>
+        <p style={{margin:'6px 0 0',fontSize:13.5,lineHeight:1.5,color:'var(--text-muted)'}}>mloda is a Python library. Your AI reaches it the way it reaches any Python: a tool call, a script, or a skill you give your coding agent. That is one tool, ask by name, instead of one tool per database, file store and API. A person reaches it from a notebook.</p>
       </div>
     </div>
   </section>;
 }
-function TraceAndLane(){
+function WhyNotTheAI(){
   const cards=[
-    ['Every result explains itself','Each result carries its trace: which sources were read, which steps ran, and which version of each. A wrong number walks back to the step that made it. Tab 3 of the demo above shows it for the risk score.'],
+    ['The same way every time','Your AI does not work out the joins, the cleaning or the personal-data removal on its own. Your team wrote those steps once. Every request runs the same steps, and swapping the AI model does not change how a number is made.'],
+    ['Every number can be explained','Each result carries how it was made: which sources were read, which steps ran, and which version of each. When someone challenges a number, you show the steps, not a chat log. Tab 3 of the demo above shows it for the risk score.'],
+    ['You decide which steps exist','Your AI gets only what a step gives back. Which steps are approved for use is a decision your team makes, in code. Free to use. Pay to control who may run which step, and to see what ran.']];
+  return <section id="why" style={{padding:'36px 24px 48px',maxWidth:1200,margin:'0 auto'}}>
+    <SectionHeader title={<span>Same steps, every time.<br/>Not the AI&rsquo;s best guess.</span>} lede="Let your AI do the data work itself and it will join, clean and filter a little differently each time. Nobody can say afterwards how a number was made, and it needs access to everything. With mloda your AI asks by name, and steps your team wrote do the work." align="center"/>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20,marginTop:40}}>
+      {cards.map(([h,p],i)=><div key={h} style={{background:i===1?'var(--ink-900)':'var(--paper-1)',color:i===1?'var(--text-on-dark)':'var(--text-ink)',border:'1px solid var(--line-light)',borderRadius:'var(--radius-panel)',padding:'26px 28px',display:'flex',flexDirection:'column',gap:10}}>
+        <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:i===1?'var(--green-400)':'var(--accent)'}}>{['same steps','shown, not guessed','your call'][i]}</div>
+        <h3 style={{margin:0,fontSize:21,fontWeight:600,lineHeight:1.25}}>{h}</h3>
+        <p style={{margin:0,fontSize:15,lineHeight:1.55,color:i===1?'var(--text-on-dark-2)':'var(--text-muted)'}}>{p}</p>
+      </div>)}
+    </div>
+  </section>;
+}
+function TraceAndLane(){
+  const M=({t})=><span style={{fontFamily:'var(--font-mono)',fontSize:13.5,color:'var(--green-400)'}}>{t}</span>;
+  const cards=[
+    ['Named once, asked for everywhere',<span><M t="risk_grade"/>, <M t="income__sum_aggr"/>, <M t="docs__embedded"/>: the names your team gives its steps become the words every app and every AI in your company asks in. Twenty steps become two hundred, and nothing is rebuilt. The next question is asked in words that already exist.</span>],
     ['Not another pipeline tool','mloda does not schedule, store, or serve. It is the step in between: it computes what a request needs, from your sources, on your engine (Pandas, Polars, Spark, DuckDB), and hands the result to your AI. Keep Airflow, dbt, or Feast. They dock on.']];
   return <section id="trace" style={{padding:'12px 24px 56px',maxWidth:1200,margin:'0 auto'}}>
     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
@@ -354,14 +371,14 @@ function GradientCTA(){
     <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',opacity:.3,mixBlendMode:'overlay'}}><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
     <div style={{position:'relative'}}>
       <img src={A+'mloda-wordmark.svg'} alt="mloda" style={{height:72,filter:'brightness(0) invert(1)'}}/>
-      <h2 style={{margin:'30px 0 0',fontSize:'clamp(30px,3.4vw,44px)',fontWeight:600,letterSpacing:'var(--tracking-display)'}}>Start building with us today.</h2>
+      <h2 style={{margin:'30px 0 0',fontSize:'clamp(30px,3.4vw,44px)',fontWeight:600,letterSpacing:'var(--tracking-display)'}}>Ask your AI something new.<br/>Without a new data project.</h2>
       <div style={{display:'flex',gap:12,justifyContent:'center',marginTop:34}}>
         <Button label="Talk to us" variant="white" href="https://calendly.com/hello-mloda/30min"/>
         <Button label="Explore the open source" variant="ink" href={DOCS}/>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(220px,300px))',gap:16,justifyContent:'center',marginTop:72}}>
         {[['Open source','Free to use. The library, all steps that ship with it, and the sets built on it. Apache-2.0.','Read the docs',DOCS],
-          ['Custom','We build and support your steps and connections, and set up access control and an audit log: who may run which step, and what ran. Contact us.','Talk to us','https://calendly.com/hello-mloda/30min']].map(([h,p,cta,href])=>
+          ['Custom','Pay to control. We build and support your steps and connections, and set up who may run which step, and for every number what ran, which version, and what it read. Contact us.','Talk to us','https://calendly.com/hello-mloda/30min']].map(([h,p,cta,href])=>
         <div key={h} style={{background:'rgba(255,255,255,.10)',border:'1px solid rgba(255,255,255,.28)',borderRadius:'var(--radius-card)',padding:'24px 22px',display:'flex',flexDirection:'column',gap:10,textAlign:'left',backdropFilter:'blur(4px)'}}>
           <h3 style={{margin:0,fontSize:19,fontWeight:600}}>{h}</h3>
           <p style={{margin:0,fontSize:13.5,lineHeight:1.5,color:'rgba(255,255,255,.8)',flex:1}}>{p}</p>
@@ -386,10 +403,11 @@ function App(){
     '--font-sans':`'${t.font}',Helvetica,Arial,sans-serif`,fontFamily:'var(--font-sans)'};
   const motion={calm:{slide:7000,wall:55},regular:{slide:2800,wall:30},energetic:{slide:2100,wall:14}}[t.motion];
   return <div style={vars}>
-  <a href="https://github.com/mloda-ai/mloda" target="_blank" style={{display:'block',background:'var(--accent)',color:'#fff',textAlign:'center',padding:'5px 12px',fontSize:13,fontFamily:'var(--font-mono)',textDecoration:'none'}}>mloda 0.10.0 is out. Free and open source under Apache-2.0 →</a>
+  <a href="https://github.com/mloda-ai/mloda/releases/tag/0.11.0" target="_blank" style={{display:'block',background:'var(--accent)',color:'#fff',textAlign:'center',padding:'5px 12px',fontSize:13,fontFamily:'var(--font-mono)',textDecoration:'none'}}>mloda 0.11.0 is out. Free and open source under Apache-2.0 →</a>
   <Navbar logoSrc={A+'mloda-wordmark-green.svg'} items={['How it works','Use cases','Docs','GitHub']} cta="Free on GitHub" ctaHref="https://github.com/mloda-ai/mloda"/>
   <Hero/>
   <ProductPanel interval={motion.slide} bright={t.panel==='bright'}/>
+  <WhyNotTheAI/>
   <DataSources logoWall={<LogoWall names={['CSV','JSON','Parquet','Feather','ORC','Plain text','Markdown','YAML','SQLite','API / runtime data']} speed={motion.wall}/>}/>
   <StepInCode/>
   <Plugins/>
@@ -398,7 +416,7 @@ function App(){
   <UseCases/>
   <GetStarted/>
   <GradientCTA/>
-  <Footer logoSrc={A+'mloda-wordmark.svg'} columns={{Product:[['How it works','#how-it-works'],['Demo','#lineage'],['Built on mloda','#built-with-mloda'],['Use cases','#use-cases']],Developers:[['Docs',DOCS],['Quickstart',copyAgentPrompt],['GitHub','https://github.com/mloda-ai/mloda'],['PyPI','https://pypi.org/project/mloda/']],Company:['About','Blog','Contact'],Legal:['Imprint','Privacy Policy','Terms']}}/>
+  <Footer logoSrc={A+'mloda-wordmark.svg'} columns={{Product:[['Why mloda','#why'],['How it works','#how-it-works'],['Demo','#lineage'],['Built on mloda','#built-with-mloda'],['Use cases','#use-cases']],Developers:[['Docs',DOCS],['Quickstart',copyAgentPrompt],['GitHub','https://github.com/mloda-ai/mloda'],['PyPI','https://pypi.org/project/mloda/']],Company:['About','Blog','Contact'],Legal:['Imprint','Privacy Policy','Terms']}}/>
   <TweaksPanel>
     <TweakSection label="Brand"/>
     <TweakColor label="Accent" value={t.accent}
